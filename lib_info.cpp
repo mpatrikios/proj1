@@ -12,7 +12,6 @@ struct songInfo{
     int trackNumber;
     string songName;
     int songTime; //in seconds
-
 };
 
 int main(int argc, char *argv[]){
@@ -50,10 +49,9 @@ int main(int argc, char *argv[]){
 
 }
 
-    
-    //create map with key = artist name and value is a set (automatically sorts) of information
-
-    //print out key (artist name): number of values, total album time
-    //print out album name: number of values, total album time
-    //print out numbered list of elements in set with name and time of song
+//want the artists printed in alphabetical order
+//want the songs printed in track order
+//how to order track number
+//total song time
+//convert song time to seconds
 
