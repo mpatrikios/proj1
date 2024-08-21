@@ -49,6 +49,12 @@ int main(int argc, char *argv[]){
 
 }
 
+//1st ArtistName: numofSongs, totalalbumnTime
+//2nd AlbumnName: TotalSongs, totalalbumnTime
+
+//For each albumn
+//tracknum. songname: songtime
+
 //want the artists printed in alphabetical order
 //want the songs printed in track order
 //how to order track number
