@@ -11,14 +11,14 @@ struct songInfo{
     string albumName;
     int trackNumber;
     string songName;
-    int songTime; //in seconds
+    string songTime; //in seconds
 };
 
 // total album time
-int total_time(){}
+string total_time(set<songInfo> songs){}
 
 // convert song time to seconds
-void convertToSeconds(){}
+void convertToSeconds(string songTime){}
 
 int main(int argc, char *argv[]){
     string inputFile;
@@ -49,16 +49,35 @@ int main(int argc, char *argv[]){
 
     }
 
-    //for each artist
-    for(int i = 0; i < lib_info.size(); i++){
-        cout << lib_info[i] << ": " << lib_info[i].size() << lib_info[i].total_time();
-        cout << lib_info->i.albumName << ": " << lib_info[i].size() << lib_info[i].total_time();
+    for (auto artistPair : lib_info) { //iterate through lib_info map by pairs
+        string artist = artistPair.first; //key of iterator
+        const set<songInfo> songs = artistPair.second; //access the set of stongs stored as the value
 
-        for(int j = 0; j < lib_info[i].size(); j++){
-            cout << lib_info[i][j].trackNumber << ". " << lib_info[i][j].songName << ": " << lib_info[i][j].songTime;
+        //print artist name, number of songs, and total album time
+        cout << artist << ": " << songs.size() << "Total time: "
+             << totalTime(songs) << endl;
+
+        string albumName = songs.begin()->albumName; //assuming no artist will have more than one album
+
+        //creates a new map that sorts songs by album name under the same artist
+        //dont know if necessary
+        // map<string, set<songInfo>> albumMap;
+        // for (const auto& song : songs) {
+        //     albumMap[song.albumName].insert(song);
+        // }
+
+        //print album name, number of songs, and total album time
+        cout << "  " << albumName << ": " << songs.size() << "Total time: "
+            << totalTime(songs) << "" << endl; 
+
+        //another for loop, print every song in the set with its track number and time
+        for (auto song : songs) {
+                cout << "    " << song.trackNumber << ". " << song.songName << ": "
+                     << song.songTime << endl;
+            }
         }
-    }
 
+    return 0;
 }
 
 //1st ArtistName: numofSongs, totalalbumnTime
