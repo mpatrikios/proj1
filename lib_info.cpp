@@ -18,6 +18,17 @@ struct songInfo{
     }
 };
 
+// convert song time to seconds
+int convertToSeconds(const string& songTime){
+    int minutes = 0;
+    int seconds = 0;
+    char colon;
+
+    stringstream ss(songTime);
+    ss >> minutes >> colon >> seconds; 
+
+    return minutes * 60 + seconds; 
+}
 
 // total album time
 string totalTime(const set<songInfo>& songs){
@@ -37,18 +48,6 @@ string totalTime(const set<songInfo>& songs){
 
 }
 
-// convert song time to seconds
-int convertToSeconds(const string& songTime){
-    int minutes = 0;
-    int seconds = 0;
-    char colon;
-
-    stringstream ss(songTime);
-    ss >> minutes >> colon >> seconds; 
-
-    return minutes * 60 + seconds; 
-}
-
 // remove underscores from strings
 void removeUnderscores(string& str){
     for (char& c : str){
@@ -64,7 +63,8 @@ int main(int argc, char *argv[]){
     ifstream file(inputFile);
 
     string tempLine, artistName, genre;
-    map<string, set<songInfo > > lib_info;
+    // map<string, set<songInfo > > lib_info;
+    map<string, map<string, set<songInfo > > > lib_info;
 
     while(getline(file, tempLine)){
 
@@ -81,42 +81,63 @@ int main(int argc, char *argv[]){
         removeUnderscores(artistName);
         removeUnderscores(tempSong.albumName);
 
-        lib_info[artistName].insert(tempSong);
+        // lib_info[artistName].insert(tempSong);
+        lib_info[artistName][tempSong.albumName].insert(tempSong);
 
         // cout << tempSong.songName << " " << tempSong.albumName << " " << artistName << " " << tempSong.albumName  << " " << tempSong.trackNumber << " " << tempSong.songTime << endl;
 
     }
 
-    for (auto artistPair : lib_info) { //iterate through lib_info map by pairs
-        string artist = artistPair.first; //key of iterator
-        const set<songInfo> songs = artistPair.second; //access the set of stongs stored as the value
+    for (const auto& artistPair : lib_info) { 
+        string artist = artistPair.first;
+        const auto& albums = artistPair.second;
 
-        //print artist name, number of songs, and total album time
-        cout << artist << ": " << songs.size() << "Total time: "
-             << totalTime(songs) << endl;
+        cout << artist << ": " << endl;
 
-        string albumName = songs.begin()->albumName; //assuming no artist will have more than one album
+        for (const auto& albumPair : albums) {
+            string albumName = albumPair.first;
+            const auto& songs = albumPair.second;
 
-        //creates a new map that sorts songs by album name under the same artist
-        //dont know if necessary
-        map<string, set<songInfo>> albumMap;
-        for (const auto& song : songs) {
-           albumMap[song.albumName].insert(song);
-       }
+            cout << "  " << albumName << ": " << songs.size() << " Total time: "
+                 << totalTime(songs) << " seconds" << endl;
 
-        //print album name, number of songs, and total album time
-        cout << "  " << albumName << ": " << songs.size() << "Total time: "
-            << totalTime(songs) << "" << endl; 
-
-        //another for loop, print every song in the set with its track number and time
-        for (auto song : songs) {
+            for (const auto& song : songs) {
                 cout << "    " << song.trackNumber << ". " << song.songName << ": "
                      << song.songTime << endl;
             }
         }
 
+    // for (auto artistPair : lib_info) { //iterate through lib_info map by pairs
+    //     string artist = artistPair.first; //key of iterator
+    //     const set<songInfo> songs = artistPair.second; //access the set of stongs stored as the value
+
+    //     //print artist name, number of songs, and total album time
+    //     cout << artist << ": " << songs.size() << "Total time: "
+    //          << totalTime(songs) << endl;
+
+    //     string albumName = songs.begin()->albumName; //assuming no artist will have more than one album
+
+    //     //creates a new map that sorts songs by album name under the same artist
+    //     //dont know if necessary
+    //     map<string, set <songInfo > > albumMap;
+    //     for (const auto& song : songs) {
+    //        albumMap[song.albumName].insert(song);
+    //    }
+
+    //     //print album name, number of songs, and total album time
+    //     cout << "  " << albumName << ": " << songs.size() << "Total time: "
+    //         << totalTime(songs) << "" << endl; 
+
+        //another for loop, print every song in the set with its track number and time
+        // for (auto song : songs) {
+        //         cout << "    " << song.trackNumber << ". " << song.songName << ": "
+        //              << song.songTime << endl;
+        //     }
+    }
     return 0;
 }
+
+
 
 //1st ArtistName: numofSongs, totalalbumnTime
 //2nd AlbumnName: TotalSongs, totalalbumnTime
