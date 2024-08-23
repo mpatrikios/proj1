@@ -15,10 +15,35 @@ struct songInfo{
 };
 
 // total album time
-string total_time(set<songInfo> songs){}
+string total_time(const set<songInfo>& songs){
+    int totalSeconds = 0;
+
+    for (const auto& song : songs){
+      totalSeconds += convertToSeconds(song.songTime);
+    }
+
+    int albumMinutes = totalSeconds / 60;
+    int albumSeconds = totalSeconds % 60;
+
+    stringstream albumTime; 
+    albumTime << albumMinutes << ':' << setw(2) << setfill('0') << albumSeconds;
+
+    return albumTime.str();
+
+}
 
 // convert song time to seconds
-void convertToSeconds(string songTime){}
+int convertToSeconds(const string& songTime){
+    int minutes = 0;
+    int seconds = 0;
+    char colon;
+
+    stringstream ss(songTime);
+    ss >> minutes >> colon >> seconds; 
+
+    return minutes * 60 + seconds; 
+}
+
 
 int main(int argc, char *argv[]){
     string inputFile;
@@ -55,7 +80,7 @@ int main(int argc, char *argv[]){
 
         //print artist name, number of songs, and total album time
         cout << artist << ": " << songs.size() << "Total time: "
-             << totalTime(songs) << endl;
+             << total_time(songs) << endl;
 
         string albumName = songs.begin()->albumName; //assuming no artist will have more than one album
 
@@ -68,7 +93,7 @@ int main(int argc, char *argv[]){
 
         //print album name, number of songs, and total album time
         cout << "  " << albumName << ": " << songs.size() << "Total time: "
-            << totalTime(songs) << "" << endl; 
+            << total_time(songs) << "" << endl; 
 
         //another for loop, print every song in the set with its track number and time
         for (auto song : songs) {
