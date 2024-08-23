@@ -19,10 +19,34 @@ struct songInfo{
 };
 
 // total album time
-string total_time(set<songInfo> songs){}
+string total_time(const set<songInfo>& songs){
+    int totalSeconds = 0;
+
+    for (const auto& song : songs){
+      totalSeconds += convertToSeconds(song.songTime);
+    }
+
+    int albumMinutes = totalSeconds / 60;
+    int albumSeconds = totalSeconds % 60;
+
+    stringstream albumTime; 
+    albumTime << albumMinutes << ':' << setw(2) << setfill('0') << albumSeconds;
+
+    return albumTime.str();
+
+}
 
 // convert song time to seconds
-void convertToSeconds(string songTime){}
+int convertToSeconds(const string& songTime){
+    int minutes = 0;
+    int seconds = 0;
+    char colon;
+
+    stringstream ss(songTime);
+    ss >> minutes >> colon >> seconds; 
+
+    return minutes * 60 + seconds; 
+}
 
 int main(int argc, char *argv[]){
     string inputFile;
