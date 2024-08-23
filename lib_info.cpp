@@ -73,10 +73,10 @@ int main(int argc, char *argv[]){
 
         //creates a new map that sorts songs by album name under the same artist
         //dont know if necessary
-        //map<string, set<songInfo>> albumMap;
-        //for (const auto& song : songs) {
-        //    albumMap[song.albumName].insert(song);
-       // }
+        map<string, set<songInfo>> albumMap;
+        for (const auto& song : songs) {
+           albumMap[song.albumName].insert(song);
+       }
 
         //print album name, number of songs, and total album time
         cout << "  " << albumName << ": " << songs.size() << "Total time: " << endl;
