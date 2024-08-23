@@ -18,8 +18,9 @@ struct songInfo{
     }
 };
 
+
 // total album time
-string total_time(const set<songInfo>& songs){
+string totalTime(const set<songInfo>& songs){
     int totalSeconds = 0;
 
     for (const auto& song : songs){
@@ -46,6 +47,15 @@ int convertToSeconds(const string& songTime){
     ss >> minutes >> colon >> seconds; 
 
     return minutes * 60 + seconds; 
+}
+
+// remove underscores from strings
+void removeUnderscores(string& str){
+    for (char& c : str){
+        if (c == '_'){
+            c = ' ';
+        }
+    }
 }
 
 int main(int argc, char *argv[]){
