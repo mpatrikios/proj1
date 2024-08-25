@@ -31,21 +31,38 @@ int convertToSeconds(const string& songTime){
 }
 
 // total album time
-string totalTime(const set<songInfo>& songs){
+string totalArtistTime(const map<string, set<songInfo>>& lib_info) {
     int totalSeconds = 0;
 
-    for (const auto& song : songs){
-      totalSeconds += convertToSeconds(song.songTime);
+    for (const auto& artist : lib_info) {
+        for (const auto& song : artist.second) {
+            totalSeconds += convertToSeconds(song.songTime);
+        }
     }
 
-    int albumMinutes = totalSeconds / 60;
-    int albumSeconds = totalSeconds % 60;
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
 
-    stringstream albumTime; 
-    albumTime << albumMinutes << ':' << setw(2) << setfill('0') << albumSeconds;
+    stringstream time; 
+    time << minutes << ':' << setw(2) << setfill('0') << seconds;
 
-    return albumTime.str();
+    return time.str();
+}
 
+string totalAlbumTime(const set<songInfo>& songs) {
+    int totalSeconds = 0;
+
+    for (const auto& song : songs) {
+        totalSeconds += convertToSeconds(song.songTime);
+    }
+
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+
+    stringstream time; 
+    time << minutes << ':' << setw(2) << setfill('0') << seconds;
+
+    return time.str();
 }
 
 // remove underscores from strings
@@ -88,24 +105,45 @@ int main(int argc, char *argv[]){
 
     }
 
-    for (const auto& artistPair : lib_info) { 
-        string artist = artistPair.first;
-        const auto& albums = artistPair.second;
+    for (auto artistIt = lib_info.begin(); artistIt != lib_info.end(); ++artistIt) {
+        string artist = artistIt->first;
+        const map<string, set<songInfo>>& albums = artistIt->second; //create a temp map where albums=key and songs in the album are a set (for cases when an aritist has more than one album)
 
-        cout << artist << ": " << endl;
+        // Calculate total time for the artist
+        cout << artist << ": " << totalArtistTime(albums) << endl;
 
-        for (const auto& albumPair : albums) {
-            string albumName = albumPair.first;
-            const auto& songs = albumPair.second;
 
-            cout << "  " << albumName << ": " << songs.size() << " Total time: "
-                 << totalTime(songs) << " seconds" << endl;
+    for (auto albumIt = albums.begin(); albumIt != albums.end(); ++albumIt) {
+            const string& albumName = albumIt->first;
+            const set<songInfo>& songs = albumIt->second;
+
+            cout << "  " << albumName << ": " << songs.size() << " Total time: " << totalAlbumTime(songs) << endl;
 
             for (const auto& song : songs) {
-                cout << "    " << song.trackNumber << ". " << song.songName << ": "
-                     << song.songTime << endl;
+                cout << "    " << song.trackNumber << ". " << song.songName << ": " << song.songTime << endl;
             }
-        }
+    }
+    // for (const auto& artistPair : lib_info) { 
+    //     string artist = artistPair.first;
+    //     const auto& albums = artistPair.second;
+
+    //     cout << artist << ": " << totalTime(tempSong.albumName) << endl;
+
+    //     for (const auto& albumPair : albums) {
+    //         string albumName = albumPair.first;
+    //         const auto& songs = albumPair.second;
+
+    //         cout << "  " << albumName << ": " << songs.size() << " Total time: "
+    //              << totalTime(songs) << " seconds" << endl;
+
+    //         for (const auto& song : songs) {
+    //             cout << "    " << song.trackNumber << ". " << song.songName << ": "
+    //                  << song.songTime << endl;
+    //         }
+    //     }
+
+    // worked orginally for printing out songs but only for one album per artist
+
 
     // for (auto artistPair : lib_info) { //iterate through lib_info map by pairs
     //     string artist = artistPair.first; //key of iterator
@@ -138,16 +176,8 @@ int main(int argc, char *argv[]){
 }
 
 
+// if statement in main for if artist has more than one key 
+// or change total time function to loop through albums and add all song times
 
-//1st ArtistName: numofSongs, totalalbumnTime
-//2nd AlbumnName: TotalSongs, totalalbumnTime
 
-//For each albumn
-//tracknum. songname: songtime
-
-//want the artists printed in alphabetical order
-//want the songs printed in track order
-//how to order track number
-//total song time
-//convert song time to seconds
 
