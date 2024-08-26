@@ -4,6 +4,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -11,7 +12,8 @@ struct songInfo{
     string albumName;
     int trackNumber;
     string songName;
-    string songTime; //in seconds
+    string songTime; // mm:ss
+    string totalSongs; // for the artist
 
     bool operator<(const songInfo& other) const {
         return trackNumber < other.trackNumber;
@@ -32,6 +34,7 @@ int convertToSeconds(const string& songTime){
 
 // total album time
 string totalArtistTime(const map<string, set<songInfo>>& lib_info) {
+
     int totalSeconds = 0;
 
     for (const auto& artist : lib_info) {
@@ -105,22 +108,25 @@ int main(int argc, char *argv[]){
 
     }
 
-    for (auto artistIt = lib_info.begin(); artistIt != lib_info.end(); ++artistIt) {
-        string artist = artistIt->first;
-        const map<string, set<songInfo>>& albums = artistIt->second; //create a temp map where albums=key and songs in the album are a set (for cases when an aritist has more than one album)
+    for (auto it = lib_info.begin(); it != lib_info.end(); ++it) {
+        string artist = it->first;
+        const map<string, set<songInfo>>& albums = it->second; //create a temp map where albums=key and songs in the album are a set (for cases when an aritist has more than one album)
+        int totalArtistSongs = 0;
 
-        // Calculate total time for the artist
-        cout << artist << ": " << totalArtistTime(albums) << endl;
-
+        for (auto album : albums) {
+            totalArtistSongs += album.second.size();
+        }
+        cout << artist << ": " << totalArtistSongs << ", " << totalArtistTime(albums) << endl;
 
     for (auto albumIt = albums.begin(); albumIt != albums.end(); ++albumIt) {
             const string& albumName = albumIt->first;
             const set<songInfo>& songs = albumIt->second;
 
-            cout << "  " << albumName << ": " << songs.size() << " Total time: " << totalAlbumTime(songs) << endl;
 
-            for (const auto& song : songs) {
-                cout << "    " << song.trackNumber << ". " << song.songName << ": " << song.songTime << endl;
+            cout << "        " << albumName << ": " << songs.size() << ", " << totalAlbumTime(songs) << endl;
+
+            for (auto song : songs) {
+                cout << "                " << song.trackNumber << ". " << song.songName << ": " << song.songTime << endl;
             }
     }
     // for (const auto& artistPair : lib_info) { 
